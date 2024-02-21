@@ -7,60 +7,317 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
-## About Laravel
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+# Blog Laravel
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Commencement
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Ces instructions décrivent la procédure à suivre pour installer le projet sur une machine local pour le développement et les tests.
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## A. Installation
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+Dans cette section, il y a les différentes étapes à suivre afin d'avoir un environnement de développement fonctionnel.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 1. Installer PHP, Composer, Git, NodeJS et NPM sur votre machine. Procédure pour Windows :
 
-## Laravel Sponsors
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+#### a. Installlation de PHP
 
-### Premium Partners
+1. Télécharger le dernier package de [fichiers Zip non thread-safe](https://www.php.net/downloads.php) pour Windows (à l'heure actuelle PHP 8.3.3).
+2. Décompressez les fichiers dans un répertoire nommé `PHP` sur votre machine.
+3. Dupliquer le fichier `php.ini-development` et le renomer en `php.ini`.
+4. Ouvrir le fichier `php.ini` et décomenter les lignes suivantes en enlevant le point virgule au début des lignes :
+```bash
+;extension=mbstring
+;extension=openssl
+;extension=zip
+;extension=fileinfo
+```
+Ces lignes permettent d'activer les extensons Mbstring, OpenSSL, zip et FileInfo requises par Laravel et Composer.
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+5. Pour vérifier que PHP est bien installé, lancer la commande suivante pour afficher la version :
+```bash
+php -v
+```
+ou
+```bash
+php --version
+```
+La version de PHP devrait s'afficher, pour ma part la version 8.3.3.
 
-## Contributing
+#### b. Installation de Composer
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+1. Télécharger et exécuter Composer-Setup.exe sur le site de [Composer](https://getcomposer.org/download/).
+2. Suivre la procédure d'installation et choisir la version de PHP (installé précédemment) à utiliser.
+3. De la même manière que pour PHP, lancer la commande pour afficher la version pour vérifier l'installation :
+```bash
+composer -v
+```
+ou
+```bash
+composer --version
+```
 
-## Code of Conduct
+#### c. Installation de NodeJs et NPM
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+1. Télécharger sur le site [NodeJS](https://nodejs.org/en) le `fichier .exe` de la dernière version `LTS` et l'exécuter à la fin du téléchargement.
+2. De la même manière que pour PHP et Composer, lancer la commande pour afficher la version pour vérifier l'installation :
+```bash
+npm -v
+node -v
+```
+ou
+```bash
+npm --version
+node --version
+```
 
-## Security Vulnerabilities
+#### d. Installation de Git
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Installer Git permettra d'utiliser les différentes commandes pour manipuler le projet avec le dépôt où il sera partager (clone, commit, push, pull, ...).
 
-## License
+Télécharger [Git](https://git-scm.com/download/win) et exécuter le `fichier .exe`.
+Pour vérifier l'installation :
+```bash
+git --version
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### 2. Création du projet Laravel
+
+Pour créer le projet sous Laravel, lancer la commande suivante (dernier élément de la commande correspondant au nom du projet) :
+```bash
+composer create-project laravel/laravel Blog_Laravel
+```
+
+Pour tester le projet dans l'environnement local, j'utilise le serveur de développement intégré de PHP, en lançant la commande suivante dans le répertoire du projet (Blog_Laravel) :
+```bash
+php artisan serve
+```
+Dans le terminal, suite à l'exécution de cette commande, l'URL suivante m'est proposée pour visualiser le résultat du projet : 
+http://127.0.0.1:8000/
+
+Avec cette commande, le projet affiche déjà une page web, celle créé par défaut en créant le projet Laravel.
+Cette commande va être utiliser durant tout le développement pour permettre de tester les différent ajouts et modificaions.
+
+### 3. Création d'un dépôt Git et intégrer le projet dans le dépôt
+
+Un dépôt Git a été créé sur GitHub pour y déposer le projet, afin de permettre le partage du code. Pour intégrer le projet, voici la série de commande git à effectuer :
+
+1. Pour `initialiser` le dossier du projet :
+```bash
+git init
+```
+2. Pour ajouter à l'`index` (ou au `stage`), la liste des modifications préparées :
+```bash
+git add .
+```
+3. Pour transférer les fichiers en attente dans l'index vers le `Head`, avec le message qui permet de savoir à quoi correspondent les ajouts/modifications :
+```bash
+git commit -m "init projet : code de base Framework Laravel"
+```
+4. Pour établir la connexion avec le dépôt Git créé :
+```bash
+git remote add origin https://github.com/Morganedid/Blog_Laravel.git
+```
+5. Pour envoyer les fichiers dans le dépôt Git :
+```bash
+git push origin main
+```
+
+En cas de changement de machine de développement avec le dépôt git existant, pour récupérer le projet dans l'environnement de développement, il faut cloner le projet par ligne de commande. 
+
+Pour cela, il faut ouvrir un terminal et se situer dans le répertoire où le projet va être situer dans l'environnement de développement, et ainsi lancer la commande suivante :
+
+```bash
+git clone https://github.com/Morganedid/Blog_Laravel.git
+```
+
+### 4. Intégration de Vue 3 en composition API
+
+Afin d'intégrer Vue 3 au projet Laravel, toujours dans un terminal et dans le dossier du projet, voici les différentes étapes et commandes à suivre :
+1. Installer `Laravel Mix` pour simplifier le processus de la pipeline d'actifs (Webpack) en utilisant npm :
+```bash
+npm install
+npm install laravel-mix --save-dev
+```
+
+2. Installation Vue 3
+```bash
+npm install vue@latest
+```
+
+3. Lors de la création du projet avec Laravel, le fichier `vite.config.js` s'est créé. Supprimer-le et créer un nouveau fichier en le nommant `webpack.mix.cjs`.
+
+4. Ajouter à ce nouveau fichier le contenu suivant :
+```bash
+const mix = require('laravel-mix');
+
+mix.js('resources/js/app.js', 'public/js')
+  .vue()
+  .css('resources/css/app.css', 'public/css')
+  .sourceMaps(); // Enable source maps for debugging
+
+```
+5. Dans le fichier `package.json`, remplacer les lignes suivantes :
+```bash
+    "type": "module",
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build"
+    },
+```
+
+par
+
+```bash
+    "type": "commonjs",
+    "scripts": {
+        "dev": "npm run development",
+        "development": "mix",
+        "watch": "mix watch",
+        "prod": "npm run production",
+        "production": "mix --production"
+    },
+```
+
+6. Installer vue-loader, un chargeur pour webpack qui permet de créer des compsants Vue dans un format appelé SFC (Single-File Components)
+```bash
+npm install vue-loader@latest --save-dev
+```
+7. Afin de tester la bonne intégration de Vue 3 sur le projet, créer un exemple de composant à afficher, comme ceci :
+- Commencer par créer un dossier `components` dans le répertoire `.\ressources\js`.
+
+- Créer un fichier dans le dossier récemment créé, `ExampleComponent.vue` pour l'exemple, et y ajouter le code suivant :
+```bash
+<!-- resources/js/components/ExampleComponent.vue -->
+    <template>
+        <div>
+            <h1>{{ message }}</h1>
+        </div>
+    </template>
+  
+  <script>
+  export default {
+    data () {
+      return {
+        message : "Bienvenue sur Vue 3"
+      }
+    }
+  }
+  </script>
+```
+
+- Remplacer le code du fichier `app.js` du répertoire `.\ressources\js` par le code suivant :
+```bash
+// 1. On importe createApp
+import { createApp } from "vue"
+
+// 2. On importe ExampleComponent.vue
+import ExampleComponent from "./components/ExampleComponent.vue"
+
+// 3. On monte l'application Vue sur l'élément #app
+createApp(ExampleComponent).mount("#app")
+```
+
+- Remplacer le code du fichier `welcome.blade.php` du répertoire `.\ressources\views` par :
+```bash
+<!-- resources/views/welcome.blade.php -->
+<!DOCTYPE html>
+<html>
+  <head>
+      <title>Laravel Vue 3 Composition API</title>
+      <link rel="stylesheet" href="{{ mix('css/app.css') }}">
+  </head>
+  <body>
+      <div id="app" class="underline mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
+          <example-component></example-component>
+      </div>
+      <script src="{{ mix('js/app.js') }}"></script>
+  </body>
+</html>
+```
+- Suite à ces différentes étapes et pour résoudre les erreurs de compilation, installer `babel` :
+```bash
+npm install @babel/core @babel/preset-env babel-loader --save-dev
+```
+Et créer un fichier s'appelant `.babelrc` en ajoutant ces lignes :
+```bash
+{
+    "presets": ["@babel/preset-env"],
+    "plugins": ["@babel/plugin-transform-modules-commonjs"]
+}
+```
+8. Pour compiler et tester, lancer la commande suivante :
+```bash
+npm run dev
+```
+Cette commande sera à lancer à chaque modification des fichiers `.scss`, `.js` et bien évidemment les fichiers de configuration `webpack.mix.cjs` et `tailwind.config.js`, expliqué juste après pour sa création.
+
+### 5. Intégration de Tailwind CSS et Sass
+#### a. Tailwind CSS
+
+Pour intégrer Tailwind CSS au projet, voici les diférentes étapes à suivre : 
+
+1. Installer Tailwind CSS et créer le fichier `tailwind.config.js` :
+```bash
+npm install -D tailwindcss
+npx tailwindcss init
+```
+
+2. Configurer les chemins des templates
+```bash
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: ["./resources/**/*.{php,js}"],
+  theme: {
+    extend: {},
+  },
+  plugins: [],
+}
+```
+
+#### a. Sass
+`Sass` est le langage d'extension CSS de qualité le plus mature, stable et puissant. Il permet de garder les  feuilles de style bien organisées et facilite le partage de conception au sein et entre projet.
+
+1. Installation :
+```bash
+npm install -g sass
+```
+Renommer le répertoire `.\ressources\css` en `.\ressources\sass` ainsi que l'extension du fichier `app.css` en `app.scss`.
+Dans le fichier `webpack.mix.cjs`, remplacer la suivante, pour prendre en compte les modifcations précédentes :
+
+```bash
+.css('resources/css/app.css', 'public/css')
+```
+
+par
+
+```bash
+.sass('resources/sass/app.scss', 'public/css')
+```
+
+### 6. Installation et création de la base de données MySQL
+
+#### a. Installation MySQL
+
+Pour installer la base de données (BDD), c'est surtout installer un outil pour la créer. Cet outil est [Xampp](https://www.apachefriends.org/fr/index.html) à télécharger via le site.
+Cet outil est un ensemble de logiciels (MySQL et Apache, principalement, qui nous intéresse) permettant de mettre en place un serveur Web local.
+
+1. Comme dit précédemment, télécharger [Xampp](https://www.apachefriends.org/fr/index.html) et exécuter le `fichier .exe`.
+2. Une fois installer et l'interface de contrôle de Xampp ouvert, appuyer sur les boutons `Start` de la ligne `Apache` et `MySQL` (ou `PhpMyAdmin` selon la version de Xampp).
+
+#### b. Création de la base de données
+
+
+## Construit avec
+
+- [Laravel](https://laravel.com/) - Framework PHP
+- [Vue 3](https://vuejs.org/) - Framework JS
+- [TailwindCSS](https://tailwindcss.com/) - Framework CSS
+
+## Auteur
+
+- **Morgane Didelot**
+
