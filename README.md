@@ -34,8 +34,9 @@ Dans cette section, il y a les différentes étapes à suivre afin d'avoir un en
 ;extension=openssl
 ;extension=zip
 ;extension=fileinfo
+;extension=pdo_mysql
 ```
-Ces lignes permettent d'activer les extensons Mbstring, OpenSSL, zip et FileInfo requises par Laravel et Composer.
+Ces lignes permettent d'activer les extensons Mbstring, OpenSSL, zip, FileInfo et pdo_mysql requises par MySQL (Base de données, expliqué plus bas), Laravel et Composer.
 
 5. Pour vérifier que PHP est bien installé, lancer la commande suivante pour afficher la version :
 ```bash
@@ -298,18 +299,77 @@ par
 .sass('resources/sass/app.scss', 'public/css')
 ```
 
-### 6. Installation et création de la base de données MySQL
+### 6. Installation et création de la base de données MySQL (avec Xampp et Eloquent, ORM inclut dans Laravel)
 
 #### a. Installation MySQL
 
-Pour installer la base de données (BDD), c'est surtout installer un outil pour la créer. Cet outil est [Xampp](https://www.apachefriends.org/fr/index.html) à télécharger via le site.
-Cet outil est un ensemble de logiciels (MySQL et Apache, principalement, qui nous intéresse) permettant de mettre en place un serveur Web local.
+Pour créer la base de données (BDD), il va falloir d'abord installer un SGBD (Système de Gestion de Base de Données), comme MySQL, pour la stocker et la gérer.
+Pour cela, installer l'outil [Xampp](https://www.apachefriends.org/fr/index.html) à télécharger via le site, qui inclut MySQl et un serveur web local (Apache) pour faire fonctionner le SGBD.
 
 1. Comme dit précédemment, télécharger [Xampp](https://www.apachefriends.org/fr/index.html) et exécuter le `fichier .exe`.
 2. Une fois installer et l'interface de contrôle de Xampp ouvert, appuyer sur les boutons `Start` de la ligne `Apache` et `MySQL` (ou `PhpMyAdmin` selon la version de Xampp).
 
+Lorsque la base de données sera créée, il sera possible de visualiser les données via PhpMyAdmin par l'intermédiaire de Xampp en cliquant sur le bouton `Admin` correspondant à la ligne ` MySQL`. Cela ouvrira une page sur votre navigateur sur PhpMyAdmin et ainsi voir les différentes base de données créées dessus dont celle du projet `blog_laravel` qui va être créée.
+
 #### b. Création de la base de données
 
+1. Pour commencer, il faut configuer le projet Laravel afin de pouvoir faire le lien entre celui-ci et la base de données MySQL. Pour cela, il faut ouvrir le fichier `.env` du projet qui se situe à la racine du répertoire, puis remplacer le nom de la base de données `DB_DATABASE=laravel` par le nom souhaité, dans notre cas `blog_laravel`.
+Toutefois, vérifier que les informations concernant la connection à la base de données soient correctes (ce référé aux informations de votre PhpMyAdmin), me concernant voici les informations concernent la base de données :
+
+```bash
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=blog_laravel
+DB_USERNAME=root
+DB_PASSWORD=
+```
+
+4. Passer à la création de la table article.
+Un article possède : un titre, un contenu, une catégorie et une image d'illustration (possibilité de rajouter des caractérisques par la suite).
+
+Pour ce projet, j'ai fait le choix de faire une table pour la catégorie et ainsi créer une relation `1:n` avec la table `article`, car un article a une catégorie et une catégorie peut avoir plusieurs articles.
+La table article ayant une dépendance avec la table `catégorie`, commencer par créer les fichiers de model et de migration concernant la table `categorie`.
+Lancer la commande suivante dans un terminal se situant dans le projet Laravel :
+
+```bash
+php artisan make:model Categorie -m
+```
+
+Puis la même commande pour la table `article` :
+
+```bash
+php artisan make:model Article -m
+```
+
+Cette commande a créé 2 fichiers :
+- un fichier correspondant au modèle de la table, `Article.php` et `Categorie.php`, généré dans le répertoire `.\app\Models\`, qui va représenter la table en question sous forme d'objets pour simplifier les manipulations des enregistrements ;
+- un fichier de migration qui permet de proposer un versionning de la base de données et de permettre dès la première migration de créer la table article.
+
+5. Dans le fichier de migration créé précédemment `datetime_create_articles_table.php`, ajouter à la fonction `up` la structure de l'article, à la suite des lignes suivantes `$table->id();` et `$table->timestamps();` :
+
+```bash
+$table->string(column: "titre")->unique();
+$table->text(column: "contenu");
+$table->foreignId(column: "categorie_id")
+    ->constrained()
+    ->onUpdate('restrict')
+    ->onDelete('restrict');
+$table->string('image');
+```
+
+Concernant la table catégorie, voici les lignes à ajouter dans le fichier de migration `datetime_create_categories_table.php`:
+
+```bash
+$table->string(column: "nom")->unique();
+$table->string(column: "slug")->unique();
+```
+
+6. Maintenants que les ficheirs de migration sotn à jour avec la structure de chaque table, lancer la commande suivante, pour faire la migration et mettre à jour la base de donnée, si la base de données n'existe pas, la commande va vous proposer de la créer pour vous :
+
+```bash
+php artisan migrate
+```
 
 ## Construit avec
 
