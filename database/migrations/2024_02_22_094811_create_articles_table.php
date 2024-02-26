@@ -14,13 +14,10 @@ return new class extends Migration
         Schema::create('articles', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->string(column: "titre")->unique();
-            $table->text(column: "contenu");
-            $table->foreignId(column: "categorie_id")
-                ->constrained()
-                ->onUpdate('restrict')
-                ->onDelete('restrict');
-            $table->string('image');
+            $table->string(column: "title")->unique();
+            $table->text("content");
+            $table->string("category", 100);
+            $table->string("image");
         });
     }
 

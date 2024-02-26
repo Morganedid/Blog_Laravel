@@ -10,9 +10,19 @@
 
 # Blog Laravel
 
-## Commencement
+## Introduction
 
 Ces instructions décrivent la procédure à suivre pour installer le projet sur une machine local pour le développement et les tests.
+
+## Récupération du projet 
+
+Pour seulement récupérer le projet créé, comme en cas de changement de machine de développement, il faut cloner le projet par ligne de commande. 
+
+Pour cela, il faut ouvrir un terminal et aller dans le répertoire où le projet va se trouver, puis lancer la commande suivante :
+
+```bash
+git clone https://github.com/Morganedid/Blog_Laravel.git
+```
 
 ---
 
@@ -125,14 +135,6 @@ git remote add origin https://github.com/Morganedid/Blog_Laravel.git
 5. Pour envoyer les fichiers dans le dépôt Git :
 ```bash
 git push origin main
-```
-
-En cas de changement de machine de développement avec le dépôt git existant, pour récupérer le projet dans l'environnement de développement, il faut cloner le projet par ligne de commande. 
-
-Pour cela, il faut ouvrir un terminal et se situer dans le répertoire où le projet va être situer dans l'environnement de développement, et ainsi lancer la commande suivante :
-
-```bash
-git clone https://github.com/Morganedid/Blog_Laravel.git
 ```
 
 ### 4. Intégration de Vue 3 en composition API
@@ -327,30 +329,27 @@ DB_PASSWORD=
 
 4. Passer à la création de la table article.
 Un article possède : un titre, un contenu, une catégorie et une image d'illustration (possibilité de rajouter des caractérisques par la suite).
-
-Pour ce projet, j'ai fait le choix de faire une table pour la catégorie et ainsi créer une relation `1:n` avec la table `article`, car un article a une catégorie et une catégorie peut avoir plusieurs articles.
-La table article ayant une dépendance avec la table `catégorie`, commencer par créer les fichiers de model et de migration concernant la table `categorie`.
-Lancer la commande suivante dans un terminal se situant dans le projet Laravel :
+Lancer la commande suivante dans un terminal se situant dans le répertoire du projet Laravel :
 
 ```bash
-php artisan make:model Categorie -m
+php artisan make:model Article -mfsc
 ```
+Avec les options `-mfsc`, cette commande a créé 5 fichiers :
+- un fichier correspondant au modèle de la table, `Article.php`, généré dans le répertoire `.\app\Models`, qui va représenter la table en question sous forme d'objets pour simplifier les manipulations des enregistrements ;
+- un fichier de migration, `datetime_create_articles_table.php`, généré dans le répertoire `.\database\migrations`, qui permet de proposer un versionning de la base de données et de permettre dès la première migration de créer la table, `article` ;
+- un fichier `seeder`, `ArticleSeeder.php`, généré dans le répertoire `.\database\seeders`, qui permet de "peupler" la base de données avec des données fictives ;
+- un fichier `factory`, `ArticleFactory.php`, généré dans le répertoire `.\database\factories`, qui permet de définir un ensemble d'attributs par défaut pour chaque modèle Eloquent, ORM inclut dans Laravel, au lieu de spécifier manuellement la valeur de chaque colonne lors de la création des données de test ;
+- un fichier contrôleur, `ArticleController.php`, généré dans le répertoire `.\app\Http\Controller`, qui permet de regrouper la logique de traitement des requêtes associée aux `articles`.
 
-Puis la même commande pour la table `article` :
+5. Dans le répertoire `.\database\migrations\`, des fichiers de migrations autres que les 2 qui ont été créés par la commande précédente sont déjà présentes, `datetime_create_users_table.php`, `datetime_create_password_reset_tokens_table.php`, `datetime_create_failed_jobs_table.php` et `datetime_create_personal_access_tokens_table.php`.
 
-```bash
-php artisan make:model Article -m
-```
+Par défaut, lors de la création d'un projet Laravel, ces fichiers de migration sont créés. Lors de la migration, ces fichiers vont créer respectivement les tables suivantes : `users`, `password_reset_tokens`, `failed_jobs` et `personal_access_tokens`.
 
-Cette commande a créé 2 fichiers :
-- un fichier correspondant au modèle de la table, `Article.php` et `Categorie.php`, généré dans le répertoire `.\app\Models\`, qui va représenter la table en question sous forme d'objets pour simplifier les manipulations des enregistrements ;
-- un fichier de migration qui permet de proposer un versionning de la base de données et de permettre dès la première migration de créer la table article.
-
-5. Dans le fichier de migration créé précédemment `datetime_create_articles_table.php`, ajouter à la fonction `up` la structure de l'article, à la suite des lignes suivantes `$table->id();` et `$table->timestamps();` :
+6. Dans le fichier de migration créé précédemment `datetime_create_articles_table.php`, ajouter à la fonction `up` la structure de l'article, à la suite des lignes suivantes `$table->id();`, qui va correspondre à l'identifiant unique de l'article, auto-incrémenté clé primaire, et `$table->timestamps();`, qui correspond à une fonction permettant de stocker la date de création et la date de mise à jour :
 
 ```bash
 $table->string(column: "titre")->unique();
-$table->text(column: "contenu");
+$table->text(column: "content");
 $table->foreignId(column: "categorie_id")
     ->constrained()
     ->onUpdate('restrict')
@@ -358,18 +357,86 @@ $table->foreignId(column: "categorie_id")
 $table->string('image');
 ```
 
-Concernant la table catégorie, voici les lignes à ajouter dans le fichier de migration `datetime_create_categories_table.php`:
-
-```bash
-$table->string(column: "nom")->unique();
-$table->string(column: "slug")->unique();
-```
-
-6. Maintenants que les ficheirs de migration sotn à jour avec la structure de chaque table, lancer la commande suivante, pour faire la migration et mettre à jour la base de donnée, si la base de données n'existe pas, la commande va vous proposer de la créer pour vous :
+7. Maintenants que les ficheirs de migration sont à jour avec la structure de chaque table, lancer la commande suivante, pour faire la migration et mettre à jour la base de donnée, si la base de données n'existe pas, la commande va vous proposer de la créer pour vous :
 
 ```bash
 php artisan migrate
 ```
+
+8. Si PhpMyAdmin est ouvert sur votre navigateur, aller vérifier la création des tables. 
+Si les tables ne sont pas créées, une erreur serait survenu lors de l'exécution de la commande précédente.
+Dans le cas contraire, toutes les tables sont présentes dans la base de données créées en mêle temps que les premières tables.
+Une table supplémentaire a été créée, `migrations`, qui va stocker tous les fichiers de migration dans l'ordre de leur exécution (ordre croissant de leur nom), une sorte de table de versionning pour les fichiers qui ont été exécutés.
+
+### 7. Seeding (Population) et Factories
+
+Lors de la création du modèle et de la migrationde la table `article`, les fichiers permettant de générer automatiquement des données de tests ont été créés, `ArticleSeeder.php`, dans le répertoire `.\databases\seeders`, et `ArticleFactory.php`, dans le répertoire `.\databases\factories`.
+
+1. Dans un premier temps, commencer par modifier le fichier `ArticleFactory.php` qui va permettre de générer les données fictives, en ajoutant les lignes suivantes entre les crochets de `return` : 
+
+```bash
+'title' => fake()->unique()->sentence(5),
+'content' => fake()->sentence(50),
+'category' => fake()->sentence(1),
+'image' => $imagePath = fake()->image('public/storage/images', 640, 480, null, false, true, null, false, 'jpg'),
+```
+
+2. Avant d'aller plus loin, pour des soucis de fonctionnement en local, concernant l'ajout des images en base de données, il faut ajouter deux lignes dans `.\vendor\fakerphp\faker\src\Faker\Provider\Image.php`, juste en dessous des lignes suivantes :
+
+```bash
+$fp = fopen($filepath, 'w');
+$ch = curl_init($url);
+curl_setopt($ch, CURLOPT_FILE, $fp);
+```
+
+Lignes à ajouter :
+
+```bash
+curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+```
+
+3. Ajouter dans le fichier `ArticleSeeder.php` la ligne suivante dans la fonction `run`, qui va permettre d'ajouter ces données dans la table `article` :
+
+```bash
+\App\Models\Article::factory(10)->create();
+```
+
+4. Pour terminer la génération des données fictives dans la base de données, remplacer le contenu de la méthode `run` du fichier `DatabaseSeeder.php`, fichier généré lors de la création du projet laravel par : 
+
+```bash
+$this->call([
+    UserSeeder::class,
+    ArticleSeeder::class
+]);
+```
+Au sein de ce fichier, il est possible d'utiliser la méthode `call` pour exécuter des classes `seeders`.
+Cette pratique permet une meilleure lisibilité du code lorsqu'il y a plusieurs tables où il faut générer des données.
+
+Dans ce cas présent, il y a notre nouvelle table `article` et la table `user` déjà généré lors de la création du projet, hormis son fichier `seeder`. Voici la commande pour le créer :
+
+```bash
+php artisan make:seeder UserSeeder
+```
+Ajouter dans le fichier nouvellement créé, `UserSeeder.php`, le code suivant dans la méthode `run` :
+
+```bash
+\App\Models\User::factory(10)->create();
+```
+
+5. Maintenant, lancer la commande suivante pour intégrer les données de tests dans la base de données :
+
+```bash
+php artisan db:seed
+```
+
+Il est possible également d'amorcer la base de données en utilisant la commande suivante :
+
+```bash
+php artisan migrate:fresh --seed
+```
+
+Cela permet de supprimer toutes les tables et réexécuter toutes les migrations, en plus d'ajouter les données fictives.
 
 ## Construit avec
 
